@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Wallet\\": "src"
+        }
+    },
+    "require": {
+        "doctrine/orm": "^2.7",
+        "doctrine/migrations":"^2.0"
+    }
+}

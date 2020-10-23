@@ -3,23 +3,16 @@
 
 namespace Wallet\Model\Configuration;
 
-/**
- * @Entity
- * @Table(name="pagamentos")
- */
-class FormasPagamentos
-{
-    /**
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    private $id;
-    /**
-     * @Column(type="string")
-     */
-    private $nome;
 
+class MetodosPagamentos
+{
+    private ?int $id;
+    private string $nome;
+
+    public function __construct()
+    {
+
+    }
 
     public function getId()
     {

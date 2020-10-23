@@ -5,7 +5,7 @@ namespace Wallet\Controller\FormaPagamentos;
 
 
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\FormasPagamentos;
+use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
 
 class PersistenceFormaPagamento implements InterfaceController
@@ -22,7 +22,7 @@ class PersistenceFormaPagamento implements InterfaceController
 
     public function request(): void
     {
-        $formasPagamentos = new FormasPagamentos();
+        $formasPagamentos = new MetodosPagamentos();
 
         $nome = filter_input(
             INPUT_POST,

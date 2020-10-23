@@ -2,86 +2,91 @@
 
 namespace Wallet\Model\Entity;
 
-/**
- * @Entity
- * @Table(name="entrada")
- */
+
  class Entrada
 {
-    /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
-     */
-    private $id;
+     private ?int $id;
+     private string $descricao;
+     private float $valor;
+     private date $date;
+     private int $competencia;
+     private int $banco;
+     private int $metodo_pagamento;
 
-    /**
-     * @Column(type="string")
-     */
-    private $descricao;
 
-    /**
-     * @Column(type="decimal")
-     */
-    private $valor;
+     public function __construct()
+     {
 
-    /**
-     * @Column(type="string")
-     */
-    private $date;
+     }
 
-     /**
-      * @Column(type="string")
-      */
-     private $pagamento;
+     public function getId(): ?int
+     {
+         return $this->id;
+     }
 
-    
+     public function setId(?int $id): void
+     {
+         $this->id = $id;
+     }
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
+     public function getDescricao(): string
+     {
+         return $this->descricao;
+     }
 
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
+     public function setDescricao(string $descricao): void
+     {
+         $this->descricao = $descricao;
+     }
 
-    public function getDescricao(): string
-    {
-        return $this->descricao;
-    }
-    public function setDescricao(string $descricao): void 
-    {
-        $this->descricao = $descricao;
-    }
+     public function getValor(): float
+     {
+         return $this->valor;
+     }
 
-    public function getValor(): float
-    {
-        return $this->valor;
-    }
-    public function setValor(float $valor): void
-    {
-        $this->valor = $valor;
-    }
+     public function setValor(float $valor): void
+     {
+         $this->valor = $valor;
+     }
 
-    public function getDate(): string
-    {
-        return $this->date;
-    }
-    public function setDate($date){
+     public function getDate(): date
+     {
+         return $this->date;
+     }
 
-        $this->date = $date;
-    }
+     public function setDate(date $date): void
+     {
+         $this->date = $date;
+     }
 
-    public function getPagamento(): string
-    {
-         return $this->pagamento;
-    }
+     public function getCompetencia(): int
+     {
+         return $this->competencia;
+     }
 
-    public function setPagamento($pagamento): void
-    {
-        $this->pagamento = $pagamento;
-    }
+     public function setCompetencia(int $competencia): void
+     {
+         $this->competencia = $competencia;
+     }
+     public function getBanco(): int
+     {
+         return $this->banco;
+     }
+
+     public function setBanco(int $banco): void
+     {
+         $this->competencia = $banco;
+     }
+
+     public function getMetodoPagamento(): int
+     {
+         return $this->metodo_pagamento;
+     }
+
+     public function setMetodoPagamento(int $metodo_pagamento): void
+     {
+         $this->metodo_pagamento = $metodo_pagamento;
+     }
+
 
 }

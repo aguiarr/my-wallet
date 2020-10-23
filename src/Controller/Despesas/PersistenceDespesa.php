@@ -5,16 +5,23 @@ namespace Wallet\Controller\Despesas;
 
 
 use Wallet\Controller\InterfaceController;
+use Wallet\Model\Entity\Competencia;
 use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
 
 class PersistenceDespesa implements  InterfaceController
 {
     private $entityManager;
+    private $repositorioCompetencia;
+    private $repositorioDespesa;
 
     public function __construct()
     {
         $this->entityManager = (new EntityManagerCreator())->getEntityManager();
+        $this->repositorioCompetencia = $this->entityManager
+            ->getRepository(Competencia::class);
+        $this->repositorioDespesa = $this->entityManager
+            ->getRepository(Despesa::class);
     }
     public function request(): void
     {
@@ -26,10 +33,10 @@ class PersistenceDespesa implements  InterfaceController
             FILTER_SANITIZE_STRING
         );
 
-        if(is_null($descricao) || $descricao === false){
+        if (is_null($descricao) || $descricao === false) {
             echo "Descricao Inválida";
             echo $descricao;
-        }else{
+        } else {
             $despesa->setDescricao($descricao);
         }
 
@@ -39,9 +46,9 @@ class PersistenceDespesa implements  InterfaceController
             FILTER_VALIDATE_FLOAT
         );
 
-        if(is_null($valor) || $valor === false ){
+        if (is_null($valor) || $valor === false) {
             echo "Valor Inválido";
-        }else{
+        } else {
             $despesa->setValor(floatval($valor));
         }
 
@@ -51,9 +58,9 @@ class PersistenceDespesa implements  InterfaceController
             FILTER_SANITIZE_STRING
         );
 
-        if(is_null($data) || $data === false){
+        if (is_null($data) || $data === false) {
             echo "Data Inválida";
-        }else{
+        } else {
             $despesa->setDate($data);
         }
 
@@ -62,9 +69,9 @@ class PersistenceDespesa implements  InterfaceController
             'formaPagamento',
             FILTER_SANITIZE_STRING
         );
-        if(is_null($formaPagamento) || $formaPagamento === false){
-            echo  "Forma de Pagamento inválida.";
-        }else{
+        if (is_null($formaPagamento) || $formaPagamento === false) {
+            echo "Forma de Pagamento inválida.";
+        } else {
             $despesa->setPagamento($formaPagamento);
         }
 
@@ -73,12 +80,37 @@ class PersistenceDespesa implements  InterfaceController
             'id',
             FILTER_VALIDATE_INT
         );
-        if(is_null($id) || $id === false){
+        if (is_null($id) || $id === false) {
             $this->entityManager->persist($despesa);
-        }else{
+        } else {
             $despesa->setId($id);
             $this->entityManager->merge($despesa);
         }
+
+    //var_dump($this->repositorioCompetencia->findBy(array('competencia' =>  substr($data, 0, 7))));
+        if ($this->repositorioCompetencia->findBy(array('competencia' =>  substr($data, 0, 7)))) {
+
+            $competencia = $this->repositorioCompetencia->findBy(array('competencia' =>  substr($data, 0, 7)));
+
+
+            $valorAnterior = $competencia->getDespesas();
+            if (!is_null($id) || $id !== false) {
+                $despesaEdit = $this->repositorioDespesa->find($id);
+                $valor_despesa_anterior = $despesaEdit->getValor();
+
+                $competencia->setDespesas($valorAnterior + ($valor - $valor_despesa_anterior));
+
+                $this->entityManager->merge($competencia);
+            }
+            //var_dump($competencia);
+
+        } else {
+            $competencia = new Competencia(substr($data, 0, 7));
+            $competencia->setDespesas($valor);
+            $this->entityManager->persist($competencia);
+            //var_dump($competencia);
+        }
+
         $this->entityManager->flush();
 
 

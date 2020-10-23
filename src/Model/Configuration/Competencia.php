@@ -3,67 +3,69 @@
 
 namespace Wallet\Model\Configuration;
 
-/**
- * @Entity
- * @Table(name="competencias")
- */
+
 class Competencia
 {
-    /**
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    private $id;
-    /**
-     * @Column(type="string")
-     */
-    private $competencia;
 
-    /**
-     * @Column(type="decimal")
-     */
+    private ?int $id;
+    private string $competencia;
+    private date $initial_date;
+    private date $final_date;
+    private float $valor;
 
-    private $despesas;
+    public function __construct()
+    {
 
-    /**
-     * @Column(type="decimal")
-     */
-    private $entradas;
+    }
 
-
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCompetencia()
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getCompetencia(): string
     {
         return $this->competencia;
     }
 
-    public function setCompetencia($competencia): void
+    public function setCompetencia(string $competencia): void
     {
         $this->competencia = $competencia;
     }
-    public function getDespesas()
+
+    public function getInitialDate(): date
     {
-        return $this->despesas;
+        return $this->initial_date;
     }
 
-    public function setDespesas($despesas): void
+    public function setInitialDate(date $initial_date): void
     {
-        $this->despesas = $despesas;
+        $this->initial_date = $initial_date;
     }
 
-    public function getEntradas()
+    public function getFinalDate(): date
     {
-        return $this->entradas;
+        return $this->final_date;
     }
 
-    public function setEntradas($entradas): void
+    public function setFinalDate(date $final_date): void
     {
-        $this->entradas = $entradas;
+        $this->final_date = $final_date;
+    }
+
+    public function getValor(): float
+    {
+        return $this->valor;
+    }
+
+    public function setValor(float $valor): void
+    {
+        $this->valor = $valor;
     }
 
 }

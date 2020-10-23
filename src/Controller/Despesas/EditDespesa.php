@@ -6,7 +6,7 @@ namespace Wallet\Controller\Despesas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\FormasPagamentos;
+use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Entity\Banco;
 use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
@@ -24,7 +24,7 @@ class EditDespesa extends ControllerHtml implements InterfaceController
         $this->repositorioEntradas = $entityManager
             ->getRepository(Despesa::class);
         $this->repositorioFormasPagamento = $entityManager
-            ->getRepository(FormasPagamentos::class);
+            ->getRepository(MetodosPagamentos::class);
         $this->repositorioBancos = $entityManager
             ->getRepository(Banco::class);
     }

@@ -6,7 +6,7 @@ namespace Wallet\Controller\FormaPagamentos;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\FormasPagamentos;
+use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
 
 class RemoveFormaPagamento extends ControllerHtml implements InterfaceController
@@ -33,7 +33,7 @@ class RemoveFormaPagamento extends ControllerHtml implements InterfaceController
             header('Location: /listar-pagamentos');
             return;
         }
-        $formasPagamentos = $this->entityManager->getReference(FormasPagamentos::class, $id);
+        $formasPagamentos = $this->entityManager->getReference(MetodosPagamentos::class, $id);
         $this->entityManager->remove($formasPagamentos);
         $this->entityManager->flush();
         header('Location: /listar-pagamentos');

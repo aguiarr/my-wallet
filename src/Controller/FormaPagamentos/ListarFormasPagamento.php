@@ -6,7 +6,7 @@ namespace Wallet\Controller\FormaPagamentos;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\FormasPagamentos;
+use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
 
 class ListarFormasPagamento extends ControllerHtml implements InterfaceController
@@ -19,7 +19,7 @@ class ListarFormasPagamento extends ControllerHtml implements InterfaceControlle
         $entityManager = (new EntityManagerCreator())
             ->getEntityManager();
         $this->repositorioFormasPagamentos = $entityManager
-            ->getRepository(FormasPagamentos::class);
+            ->getRepository(MetodosPagamentos::class);
     }
 
     public function request(): void

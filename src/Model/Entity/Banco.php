@@ -3,22 +3,17 @@
 
 namespace Wallet\Model\Entity;
 
-/**
- * @Entity
- * @Table(name="bancos")
- */
+
 class Banco
 {
-    /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
-     */
-    private $id;
-    /**
-     * @Column(type="string")
-     */
-    private $nome;
+
+    private ?int $id;
+    private string $nome;
+
+    public function __construct()
+    {
+
+    }
 
     public function getId()
     {

@@ -14,9 +14,13 @@ namespace Wallet\Model\Entity;
      private int $metodo_pagamento;
 
 
-     public function __construct()
+     public function __construct(?int $id, string $descricao, float $valor, \DateTimeInterface $date, int $competencia)
      {
-
+         $this->id = $id;
+         $this->descricao = $descricao;
+         $this->valor = $valor;
+         $this->date = $date;
+         $this->competencia = $competencia;
      }
 
      public function getId(): ?int

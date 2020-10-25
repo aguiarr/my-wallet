@@ -4,6 +4,8 @@
 namespace Wallet\Model\Repository;
 
 
+use Wallet\Model\Entity\Banco;
+
 interface BancoRepository
 {
     public function findAll(): array;

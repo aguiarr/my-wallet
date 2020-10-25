@@ -8,15 +8,19 @@ namespace Wallet\Model\Entity;
      private ?int $id;
      private string $descricao;
      private float $valor;
-     private date $date;
+     private \DateTimeInterface $date;
      private int $competencia;
      private int $banco;
      private int $metodo_pagamento;
 
 
-     public function __construct()
+     public function __construct(?int $id, string $descricao, float $valor, \DateTimeInterface $date, int $competencia)
      {
-
+        $this->id = $id;
+        $this->descricao = $descricao;
+        $this->valor = $valor;
+        $this->date = $date;
+        $this->competencia = $competencia;
      }
 
      public function getId(): ?int
@@ -55,13 +59,13 @@ namespace Wallet\Model\Entity;
      }
 
 
-     public function getDate(): date
+     public function getDate(): \DateTimeInterface
      {
          return $this->date;
      }
 
 
-     public function setDate(date $date): void
+     public function setDate(\DateTimeInterface $date): void
      {
          $this->date = $date;
      }

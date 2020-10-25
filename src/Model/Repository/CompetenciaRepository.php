@@ -4,7 +4,9 @@
 namespace Wallet\Model\Repository;
 
 
-use Wallet\Model\Entity\Competencia;
+
+
+use Wallet\Model\Configuration\Competencia;
 
 interface CompetenciaRepository
 {

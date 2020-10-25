@@ -13,9 +13,13 @@ class Competencia
     private date $final_date;
     private float $valor;
 
-    public function __construct()
+    public function __construct(?int $id, string $competencia, date $initial_date, date $final_date, float $valor)
     {
-
+        $this->id = $id;
+        $this->competencia = $competencia;
+        $this->initial_date = $initial_date;
+        $this->final_date = $final_date;
+        $this->valor = $valor;
     }
 
     public function getId(): ?int

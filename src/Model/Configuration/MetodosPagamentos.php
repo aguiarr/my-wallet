@@ -9,9 +9,10 @@ class MetodosPagamentos
     private ?int $id;
     private string $nome;
 
-    public function __construct()
+    public function __construct(?int $id, string $nome)
     {
-
+        $this->id = $id;
+        $this->nome = $nome;
     }
 
     public function getId()

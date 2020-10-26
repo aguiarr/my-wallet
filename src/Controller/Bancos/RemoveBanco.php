@@ -8,18 +8,18 @@ use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Banco;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\banco_repository;
 
 class RemoveBanco extends  ControllerHtml implements InterfaceController
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $entityManager;
+
+
+    private \PDO $connection;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
 
     public function request(): void
@@ -33,9 +33,10 @@ class RemoveBanco extends  ControllerHtml implements InterfaceController
             header('Location: /listar-bancos');
             return;
         }
-        $banco = $this->entityManager->getReference(Banco::class, $id);
-        $this->entityManager->remove($banco);
-        $this->entityManager->flush();
+        $repositorioBanco = new banco_repository($this->connection);
+        $banco = $repositorioBanco->find($id);
+        $repositorioBanco->remove($banco);
+
         header('Location: /listar-bancos');
     }
 }

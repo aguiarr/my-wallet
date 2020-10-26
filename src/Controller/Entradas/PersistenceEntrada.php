@@ -7,14 +7,17 @@ namespace Wallet\Controller\Entradas;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Entrada;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\entrada_repository;
 
 class PersistenceEntrada implements InterfaceController
 {
-    private $entityManager;
+
+    private \PDO $connection;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
 
     public function request(): void
@@ -68,13 +71,19 @@ class PersistenceEntrada implements InterfaceController
             $entrada->setPagamento($formaPagamento);
         }
 
-        if(is_null($id) || $id === false){
-            $this->entityManager->persist($entrada);
-        }else{
+        $id = filter_input(
+            INPUT_GET,
+            'id',
+            FILTER_VALIDATE_INT
+        );
+
+        $repositorioEntrada = new entrada_repository($this->connection);
+
+        if(!is_null($id) || $id !== false){
             $entrada->setId($id);
-            $this->entityManager->merge($entrada);
         }
-        $this->entityManager->flush();
+
+        $repositorioEntrada->save($entrada);
 
 
         header('Location: /listar-entradas', true, 302);

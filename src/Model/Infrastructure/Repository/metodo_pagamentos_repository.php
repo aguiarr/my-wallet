@@ -35,7 +35,7 @@ class metodo_pagamentos_repository implements MetodosPagamentosRepository
         return $this->hydrateList($stmt);
     }
 
-    public function insert(MetodosPagamentos $metodosPagamentos): bool
+    private function insert(MetodosPagamentos $metodosPagamentos): bool
     {
         $sqlQuery = 'INSERT INTO metodo_pagamento (nome) VALUES (:nome);';
         $stmt = $this->connection->prepare($sqlQuery);
@@ -49,7 +49,7 @@ class metodo_pagamentos_repository implements MetodosPagamentosRepository
         return $success;
     }
 
-    public function update(MetodosPagamentos $metodosPagamentos): bool
+    private function update(MetodosPagamentos $metodosPagamentos): bool
     {
         $sqlQuery = 'UPDATE metodo_pagamento SET nome = :nome WHERE id = :id);';
         $stmt = $this->connection->prepare($sqlQuery);

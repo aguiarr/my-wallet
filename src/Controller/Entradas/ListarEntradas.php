@@ -4,8 +4,9 @@ namespace Wallet\Controller\Entradas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Entrada;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\entrada_repository;
 
 class ListarEntradas extends ControllerHtml implements InterfaceController
 {
@@ -14,10 +15,8 @@ class ListarEntradas extends ControllerHtml implements InterfaceController
 
     public function __construct()
     {
-        $entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
-        $this->repositorioEntrada = $entityManager
-            ->getRepository(Entrada::class);
+        $connection = ConnectionCreator::createConnection();
+        $this->repositorioEntrada = new entrada_repository($connection);
     }
 
     public function request(): void
@@ -27,6 +26,6 @@ class ListarEntradas extends ControllerHtml implements InterfaceController
             'titulo'=> 'Lista de Entradas',
             'entradas' => $entradas
         ]);
-        //var_dump($entradas);
+
     }
 }

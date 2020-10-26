@@ -1,25 +1,29 @@
 <?php
 
 
-namespace Wallet\Controller\FormaPagamentos;
+namespace Wallet\Controller\MetodosPagamentos;
 
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class RemoveFormaPagamento extends ControllerHtml implements InterfaceController
 {
+
+
+    private \PDO $connection;
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var metodo_pagamentos_repository
      */
-    private $entityManager;
+    private metodo_pagamentos_repository $repositorioMetodosPagamento;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
 
     public function request(): void
@@ -33,9 +37,10 @@ class RemoveFormaPagamento extends ControllerHtml implements InterfaceController
             header('Location: /listar-pagamentos');
             return;
         }
-        $formasPagamentos = $this->entityManager->getReference(MetodosPagamentos::class, $id);
-        $this->entityManager->remove($formasPagamentos);
-        $this->entityManager->flush();
+        $repositorioFormasPagamentos = new metodo_pagamentos_repository($this->connection);
+        $formasPagamentos = $repositorioFormasPagamentos->find($id);
+        $repositorioFormasPagamentos->remove($formasPagamentos);
+
         header('Location: /listar-pagamentos');
     }
 }

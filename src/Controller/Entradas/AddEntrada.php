@@ -10,22 +10,20 @@ use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Entity\Banco;
 use Wallet\Model\Entity\Entrada;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\banco_repository;
+use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class AddEntrada extends ControllerHtml implements InterfaceController
 {
-    private $repositorioCurso;
     private $repositorioFormaPagamentos;
     private $repositorioBancos;
 
     public function __construct()
     {
-        $entityManager = (new EntityManagerCreator())->getEntityManager();
-        $this->repositorioCurso = $entityManager
-            ->getRepository(Entrada::class);
-        $this->repositorioFormaPagamentos = $entityManager
-            ->getRepository(MetodosPagamentos::class);
-        $this->repositorioBancos = $entityManager
-            ->getRepository(Banco::class);
+        $connection = ConnectionCreator::createConnection();
+        $this->repositorioFormaPagamentos = new metodo_pagamentos_repository($connection);
+        $this->repositorioBancos = new banco_repository($connection);
     }
 
     public function request(): void

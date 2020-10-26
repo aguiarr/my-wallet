@@ -7,15 +7,17 @@ namespace Wallet\Controller\Bancos;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Banco;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\banco_repository;
 
 class PersistenceBanco implements InterfaceController
 {
-    private $entityManager;
+
+    private \PDO $connection;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
     public function request(): void
     {
@@ -38,13 +40,14 @@ class PersistenceBanco implements InterfaceController
             'id',
             FILTER_VALIDATE_INT
         );
+        $repositorioBanco = new banco_repository($this->connection);
+
         if(is_null($id) || $id === false){
-            $this->entityManager->persist($banco);
+            $repositorioBanco->save($banco);
         }else{
             $banco->setId($id);
-            $this->entityManager->merge($banco);
+            $repositorioBanco->save($banco);
         }
-        $this->entityManager->flush();
 
         header('Location: /listar-bancos', true, 302);
     }

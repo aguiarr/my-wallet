@@ -34,7 +34,7 @@ class competencia_repository implements CompetenciaRepository
        return $this->hydrateList($stmt);
     }
 
-    public function insert(Competencia $competencia): bool
+    private function insert(Competencia $competencia): bool
     {
         $sqlQuery = 'INSERT INTO competencia (competencia, initial_date, final_date, valor) VALUES (:competencia, :initial_date, :final_date, :valor);';
         $stmt = $this->connection->prepare($sqlQuery);
@@ -52,7 +52,7 @@ class competencia_repository implements CompetenciaRepository
         return $success;
     }
 
-    public function update(Competencia $competencia): bool
+    private function update(Competencia $competencia): bool
     {
         $sqlQuery = 'UPDATE competencia SET competencia = :competencia, initial_date = :inital_date, final_date = :final_date, valor = :valor;';
         $stmt = $this->connection->prepare($sqlQuery);

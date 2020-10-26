@@ -1,23 +1,23 @@
 <?php
 
 
-namespace Wallet\Controller\FormaPagamentos;
+namespace Wallet\Controller\MetodosPagamentos;
 
 
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class PersistenceFormaPagamento implements InterfaceController
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $entityManager;
+
+    private \PDO $connection;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
 
     public function request(): void
@@ -41,13 +41,12 @@ class PersistenceFormaPagamento implements InterfaceController
             'id',
             FILTER_VALIDATE_INT
         );
-        if(is_null($id) || $id === false){
-            $this->entityManager->persist($formasPagamentos);
-        }else{
+        $repositorioMetodosPagamentos = new metodo_pagamentos_repository($this->connection);
+
+        if(!is_null($id) || $id !== false) {
             $formasPagamentos->setId($id);
-            $this->entityManager->merge($formasPagamentos);
         }
-        $this->entityManager->flush();
+        $repositorioMetodosPagamentos->save($formasPagamentos);
 
         header('Location: /listar-pagamentos', true, 302);
     }

@@ -8,19 +8,17 @@ use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\despesa_repository;
 
 class RemoveDespesa extends  ControllerHtml implements  InterfaceController
 {
 
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $entityManager;
+    private \PDO $connection;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
     public function request(): void
     {
@@ -33,9 +31,10 @@ class RemoveDespesa extends  ControllerHtml implements  InterfaceController
             header('Location: /listar-despesas');
             return;
         }
-        $despesa = $this->entityManager->getReference(Despesa::class, $id);
-        $this->entityManager->remove($despesa);
-        $this->entityManager->flush();
+        $despesaRepository = new despesa_repository($this->connection);
+        $despesa = $despesaRepository->find($id);
+        $despesaRepository->remove($despesa);
+
         header('Location: /listar-despesas');
     }
 }

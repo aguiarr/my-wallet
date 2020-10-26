@@ -35,7 +35,7 @@ class despesa_repository implements DespesaRepository
         return $this->hydrateList($stmt);
     }
 
-    public function insert(Despesa $despesa): bool
+    private function insert(Despesa $despesa): bool
     {
         $insertQuery = 'INSERT INTO despesas (valor, descricao, id_banco, id_competencia, id_metodo_pagamento) VALUES (:valor, :descricao, :id_banco, :id_competencia, :id_metodo_pagamento);';
         $stmt = $this->connection->prepare($insertQuery);
@@ -53,7 +53,7 @@ class despesa_repository implements DespesaRepository
         return $success;
     }
 
-    public function update(Despesa $despesa): bool
+    private function update(Despesa $despesa): bool
     {
         $sqlQuery = 'UPDATE despesas SET valor = :valor, descricao = :descricao, id_banco = :id_banco, id_competencia = :id_competencia, id_metodo_pagamento = :id_metodo_pagamento WHERE id = :id);';
         $stmt = $this->connection->prepare($sqlQuery);

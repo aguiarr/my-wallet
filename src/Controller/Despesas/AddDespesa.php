@@ -4,27 +4,22 @@ namespace Wallet\Controller\Despesas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\MetodosPagamentos;
-use Wallet\Model\Entity\Banco;
-use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\banco_repository;
+use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class AddDespesa extends ControllerHtml implements InterfaceController
 {
 
-    private $repositorioCurso;
     private $repositorioFormasPagamento;
     private $repositorioBancos;
 
     public function __construct()
     {
-        $entityManager = (new EntityManagerCreator())->getEntityManager();
-        $this->repositorioCurso = $entityManager
-            ->getRepository(Despesa::class);
-        $this->repositorioFormasPagamento = $entityManager
-            ->getRepository(MetodosPagamentos::class);
-        $this->repositorioBancos = $entityManager
-            ->getRepository(Banco::class);
+        $connection = ConnectionCreator::createConnection();
+        $this->repositorioFormasPagamento = new metodo_pagamentos_repository($connection);
+        $this->repositorioBancos = new banco_repository($connection);
     }
 
     public function request(): void

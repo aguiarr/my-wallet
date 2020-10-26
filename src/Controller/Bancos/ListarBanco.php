@@ -8,6 +8,8 @@ use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Banco;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\banco_repository;
 
 class ListarBanco extends ControllerHtml implements InterfaceController
 {
@@ -16,10 +18,8 @@ class ListarBanco extends ControllerHtml implements InterfaceController
 
     public function __construct()
     {
-        $entityManager = (new EntityManagerCreator())
-        ->getEntityManager();
-        $this->repositorioBancos = $entityManager
-            ->getRepository(Banco::class);
+        $this->connection = ConnectionCreator::createConnection();
+        $this->repositorioBancos = new banco_repository($this->connection);
     }
 
     public function request(): void

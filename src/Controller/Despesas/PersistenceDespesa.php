@@ -8,21 +8,22 @@ use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Competencia;
 use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\competencia_repository;
+use Wallet\Model\Infrastructure\Repository\despesa_repository;
 
 class PersistenceDespesa implements  InterfaceController
 {
-    private $entityManager;
+
     private $repositorioCompetencia;
     private $repositorioDespesa;
+    private \PDO $connection;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())->getEntityManager();
-        $this->repositorioCompetencia = $this->entityManager
-            ->getRepository(Competencia::class);
-        $this->repositorioDespesa = $this->entityManager
-            ->getRepository(Despesa::class);
+        $this->connection = ConnectionCreator::createConnection();
     }
+
     public function request(): void
     {
         $despesa = new Despesa();
@@ -80,38 +81,14 @@ class PersistenceDespesa implements  InterfaceController
             'id',
             FILTER_VALIDATE_INT
         );
-        if (is_null($id) || $id === false) {
-            $this->entityManager->persist($despesa);
-        } else {
+
+        $repositorioDespesa = new despesa_repository($this->connection);
+
+        if (!is_null($id) || $id !== false) {
             $despesa->setId($id);
-            $this->entityManager->merge($despesa);
         }
 
-    //var_dump($this->repositorioCompetencia->findBy(array('competencia' =>  substr($data, 0, 7))));
-        if ($this->repositorioCompetencia->findBy(array('competencia' =>  substr($data, 0, 7)))) {
-
-            $competencia = $this->repositorioCompetencia->findBy(array('competencia' =>  substr($data, 0, 7)));
-
-
-            $valorAnterior = $competencia->getDespesas();
-            if (!is_null($id) || $id !== false) {
-                $despesaEdit = $this->repositorioDespesa->find($id);
-                $valor_despesa_anterior = $despesaEdit->getValor();
-
-                $competencia->setDespesas($valorAnterior + ($valor - $valor_despesa_anterior));
-
-                $this->entityManager->merge($competencia);
-            }
-            //var_dump($competencia);
-
-        } else {
-            $competencia = new Competencia(substr($data, 0, 7));
-            $competencia->setDespesas($valor);
-            $this->entityManager->persist($competencia);
-            //var_dump($competencia);
-        }
-
-        $this->entityManager->flush();
+        $repositorioDespesa->save($despesa);
 
 
         header('Location: /listar-despesas', true, 302);

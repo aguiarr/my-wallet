@@ -34,7 +34,7 @@ class banco_repository implements BancoRepository
         return $this->hydrateList($stmt);
     }
 
-    public function insert(Banco $banco): bool
+    private function insert(Banco $banco): bool
     {
         $sqlQuery = 'INSERT INTO banco (nome) VALUES (:nome);';
         $stmt = $this->connection->prepare($sqlQuery);
@@ -48,7 +48,7 @@ class banco_repository implements BancoRepository
         return $success;
     }
 
-    public function update(Banco $banco): bool
+    private function update(Banco $banco): bool
     {
         $sqlQuery = 'UPDATE banco SET nome = :nome WHERE id = :id);';
         $stmt = $this->connection->prepare($sqlQuery);

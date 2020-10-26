@@ -35,7 +35,7 @@ class entrada_repository implements EntradaRepository
         return $this->hydrateList($stmt);
     }
 
-    public function insert(Entrada $entrada): bool
+    private function insert(Entrada $entrada): bool
     {
         $insertQuery = 'INSERT INTO entradas (valor, descricao, id_banco, id_competencia, id_metodo_pagamento) VALUES (:valor, :descricao, :id_banco, :id_competencia, :id_metodo_pagamento);';
         $stmt = $this->connection->prepare($insertQuery);
@@ -53,7 +53,7 @@ class entrada_repository implements EntradaRepository
         return $success;
     }
 
-    public function update(Entrada $entrada): bool
+    private function update(Entrada $entrada): bool
     {
         $sqlQuery = 'UPDATE entradas SET valor = :valor, descricao = :descricao, id_banco = :id_banco, id_competencia = :id_competencia, id_metodo_pagamento = :id_metodo_pagamento WHERE id = :id);';
         $stmt = $this->connection->prepare($sqlQuery);

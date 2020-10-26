@@ -6,20 +6,16 @@ namespace Wallet\Controller\Entradas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Entrada;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\entrada_repository;
 
 class RemoveEntrada extends ControllerHtml implements InterfaceController
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
-    private $entityManager;
 
     public function __construct()
     {
-        $this->entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
+        $this->connection = ConnectionCreator::createConnection();
     }
 
     public function request(): void
@@ -33,9 +29,11 @@ class RemoveEntrada extends ControllerHtml implements InterfaceController
             header('Location: /listar-entradas');
             return;
         }
-        $entrada = $this->entityManager->getReference(Entrada::class, $id);
-        $this->entityManager->remove($entrada);
-        $this->entityManager->flush();
+        $repositorioEntrada = new entrada_repository($this->connection);
+        $entrada = $repositorioEntrada->find($id);
+
+        $repositorioEntrada->remove($entrada);
+
         header('Location: /listar-entradas');
     }
 }

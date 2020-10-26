@@ -1,13 +1,15 @@
 <?php
 
 
-namespace Wallet\Controller\FormaPagamentos;
+namespace Wallet\Controller\MetodosPagamentos;
 
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
+use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class EditFormaPagamento extends ControllerHtml implements InterfaceController
 {
@@ -15,10 +17,8 @@ class EditFormaPagamento extends ControllerHtml implements InterfaceController
 
     public function __construct()
     {
-        $entityManager = (new EntityManagerCreator())
-            ->getEntityManager();
-        $this->repositorioFormaPagamento = $entityManager
-            ->getRepository(MetodosPagamentos::class);
+        $connection = ConnectionCreator::createConnection();
+        $this->repositorioFormaPagamento = new metodo_pagamentos_repository($this->connection);
     }
 
     public function request(): void

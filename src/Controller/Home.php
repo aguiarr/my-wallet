@@ -16,11 +16,8 @@ class Home extends ControllerHtml implements InterfaceController
 {
 
     private PDO $connection;
-    private $repositorioEntradas;
-    private $repositorioDespesas;
-    /**
-     * @var competencia_repository
-     */
+    private entrada_repository $repositorioEntradas;
+    private despesa_repository $repositorioDespesas;
     private competencia_repository $repositorioCompetencias;
 
     public function __construct()
@@ -31,53 +28,39 @@ class Home extends ControllerHtml implements InterfaceController
         $this->repositorioCompetencias = new competencia_repository(($this->connection));
     }
 
-    public function totalEntrada()
-    {
-         $entradas = $this->repositorioEntradas->findAll();
-         $totalEntrada = 0;
-         foreach ($entradas as $entrada):
-               $totalEntrada +=  $entrada->getValor();
-         endforeach;
 
-         return $totalEntrada;
+    public function total(): float
+    {
+         $despesa = $this->repositorioDespesas->sumDespesas();
+         $entrada = $this->repositorioEntradas->sumEntradas();
+
+        if($despesa === null || $entrada === null ||$despesa == $entrada) $total = 0;
+        if($despesa < $entrada) $total = $entrada - $despesa;
+        if($entrada < $despesa) $total = $despesa - $entrada;
+
+        return $total;
     }
 
-
-    public function totalDespesa()
+    public function situacao(): array
     {
-         $despesas = $this->repositorioDespesas->findAll();
-         $totalDespesa = 0;
-         foreach ($despesas as $despesa){
-              $totalDespesa += $despesa->getValor();
-         }
+        $despesa = $this->repositorioDespesas->sumDespesas();
+        $entrada = $this->repositorioEntradas->sumEntradas();
 
-        return $totalDespesa;
+        if($despesa === null || $entrada === null ||$despesa == $entrada) $total = 0;
+        if($despesa < $entrada){ $situacao = 'Positico'; $cor = 'green';};
+        if($entrada <= $despesa){ $situacao = 'Negativo'; $cor = 'red';};
+
+        return [$situacao, $cor];
     }
-
-    public function total()
-    {
-        // $despesa = $this->totalDespesa();
-        // $entrada = $this->totalEntrada();
-
-        // if($despesa > $entrada){
-        //     return $despesa - $entrada;
-        // }else{
-        //     return $entrada - $despesa;
-        // }
-    }
-
 
     public function request(): void
     {
-
         $competencias = $this->repositorioCompetencias->findAll();
-        // $despesas = $this->repositorioDespesas->findAll();
-        // $entradas = $this->repositorioEntradas->findAll();
         echo $this->renderiza('home.php',[
             'titulo'=> 'Home',
-            'competencias' => $competencias
-            // 'entradas' =>$entradas,
-            // 'despesas' => $despesas,
+            'competencias' => $competencias,
+            'total' => $this->total(),
+            'situacao' => $this->situacao()
        ]);
     }
 }

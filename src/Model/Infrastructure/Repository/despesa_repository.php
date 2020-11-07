@@ -44,7 +44,15 @@ class despesa_repository implements DespesaRepository
 
         return $this->hydratedList($stmt);
     }
+    public function sumDespesas():float
+    {
+        $sqlQuery = 'SELECT SUM(valor) FROM despesas;';
+        $stmt = $this->connection->prepare($sqlQuery);
+        $stmt->execute();
 
+        $dataList = $stmt->fetchAll();
+        return $dataList[0]["SUM(valor)"];
+    }
     private function insert(Despesa $despesa): bool
     {
         $insertQuery = 'INSERT INTO despesas (valor, descricao, date, id_banco, id_competencia, id_metodo_pagamento) VALUES (:valor, :descricao, :date, :id_banco, :id_competencia, :id_metodo_pagamento);';

@@ -143,7 +143,7 @@ class competencia_repository implements CompetenciaRepository
         $valorDespesas = floatval($this->totalDespesa($id));
         $valorEntradas = floatval($this->totalEntradas($id));
 
-        if($valorDespesas == null || $valorDespesas == $valorEntradas) $total = 0;
+        if($valorDespesas === null || $valorEntradas === null ||$valorDespesas == $valorEntradas) $total = 0;
         if($valorDespesas < $valorEntradas) $total = $valorEntradas - $valorDespesas;
         if($valorEntradas < $valorDespesas) $total = $valorDespesas - $valorEntradas;
 

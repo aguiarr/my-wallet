@@ -45,7 +45,15 @@ class entrada_repository implements EntradaRepository
         return $this->hydratedList($stmt);
     }
 
+    public function sumEntradas():float
+    {
+        $sqlQuery = 'SELECT SUM(valor) FROM entradas;';
+        $stmt = $this->connection->prepare($sqlQuery);
+        $stmt->execute();
 
+        $dataList = $stmt->fetchAll();
+        return $dataList[0]["SUM(valor)"];
+    }
     private function insert(Entrada $entrada): bool
     {
         $insertQuery = 'INSERT INTO entradas (valor, descricao, date, id_banco, id_competencia, id_metodo_pagamento) VALUES (:valor, :descricao, :date, :id_banco, :id_competencia, :id_metodo_pagamento);';

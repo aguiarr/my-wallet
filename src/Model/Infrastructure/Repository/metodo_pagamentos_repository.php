@@ -4,6 +4,7 @@
 namespace Wallet\Model\Infrastructure\Repository;
 
 
+use PDO;
 use Wallet\Model\Configuration\MetodosPagamentos;
 use Wallet\Model\Repository\MetodosPagamentosRepository;
 
@@ -32,7 +33,7 @@ class metodo_pagamentos_repository implements MetodosPagamentosRepository
         $stmt->bindValue(1, $id);
         $stmt->execute();
 
-        return $this->hydrateList($stmt);
+        return $this->hydratedList($stmt);
     }
 
     private function insert(MetodosPagamentos $metodosPagamentos): bool
@@ -44,14 +45,14 @@ class metodo_pagamentos_repository implements MetodosPagamentosRepository
             ':nome' => $metodosPagamentos->getNome()
         ]);
         if ($success){
-            $metodosPagamentos->setId($this->connection->lastInsetId());
+            $metodosPagamentos->setId($this->connection->lastInsertId());
         }
         return $success;
     }
 
     private function update(MetodosPagamentos $metodosPagamentos): bool
     {
-        $sqlQuery = 'UPDATE metodo_pagamento SET nome = :nome WHERE id = :id);';
+        $sqlQuery = 'UPDATE metodo_pagamento SET nome = :nome WHERE id = :id;';
         $stmt = $this->connection->prepare($sqlQuery);
         $stmt->bindValue(':nome', $metodosPagamentos->getNome());
         $stmt->bindValue(':id', $metodosPagamentos->getId());
@@ -75,15 +76,15 @@ class metodo_pagamentos_repository implements MetodosPagamentosRepository
         return $stmt->execute();
     }
 
-    public function hydrateList(\PDOStatement $stmt): array
+    public function hydratedList(\PDOStatement $stmt): array
     {
         $dataList = $stmt->fetchAll();
         $list = [];
 
         foreach ($dataList as $data){
             $list[] = new MetodosPagamentos(
-                $data['id'],
-                $data['nome']
+                $data['nome'],
+                $data['id']
             );
         }
         return $list;

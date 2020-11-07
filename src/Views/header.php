@@ -48,6 +48,7 @@
                       <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                           <a class="dropdown-item" href="/listar-bancos">Bancos</a>
                           <a class="dropdown-item" href="/listar-pagamentos">Formas de pagamento</a>
+                          <a class="dropdown-item" href="/gerar-competencias">Gerar Competências</a>
                       </div>
                   </li>
               </ul>

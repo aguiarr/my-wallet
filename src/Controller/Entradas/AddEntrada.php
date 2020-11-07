@@ -6,18 +6,14 @@ namespace Wallet\Controller\Entradas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\MetodosPagamentos;
-use Wallet\Model\Entity\Banco;
-use Wallet\Model\Entity\Entrada;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
 use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class AddEntrada extends ControllerHtml implements InterfaceController
 {
-    private $repositorioFormaPagamentos;
-    private $repositorioBancos;
+    private metodo_pagamentos_repository $repositorioFormaPagamentos;
+    private banco_repository $repositorioBancos;
 
     public function __construct()
     {

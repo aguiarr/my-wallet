@@ -6,15 +6,14 @@ namespace Wallet\Controller\Bancos;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Banco;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
 
 class ListarBanco extends ControllerHtml implements InterfaceController
 {
 
-    private $repositorioBancos;
+    private banco_repository $repositorioBancos;
+    private \PDO $connection;
 
     public function __construct()
     {

@@ -6,25 +6,22 @@ namespace Wallet\Controller\Despesas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\MetodosPagamentos;
-use Wallet\Model\Entity\Banco;
-use Wallet\Model\Entity\Despesa;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
+use Wallet\Model\Infrastructure\Repository\despesa_repository;
 use Wallet\Model\Infrastructure\Repository\entrada_repository;
 use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class EditDespesa extends ControllerHtml implements InterfaceController
 {
-    private $repositorioEntradas;
-    private $repositorioFormasPagamento;
-    private $repositorioBancos;
+    private despesa_repository $repositorioDespesa;
+    private metodo_pagamentos_repository $repositorioFormasPagamento;
+    private banco_repository $repositorioBancos;
 
     public function __construct()
     {
         $connection = ConnectionCreator::createConnection();
-        $this->repositorioEntradas = new entrada_repository($connection);
+        $this->repositorioDespesa = new despesa_repository($connection);
         $this->repositorioFormasPagamento = new metodo_pagamentos_repository($connection);
         $this->repositorioBancos = new banco_repository($connection);
     }
@@ -40,14 +37,21 @@ class EditDespesa extends ControllerHtml implements InterfaceController
             return;
         }
 
+        $despesa = $this->repositorioDespesa->find($id);
+
         $bancos = $this->repositorioBancos->findAll();
+        $bancoAtual = $this->repositorioBancos->find($despesa[0]->getBanco());
+
         $formasPagamento = $this->repositorioFormasPagamento->findAll();
-        $despesa = $this->repositorioEntradas->find($id);
+        $formaPagamento = $this->repositorioFormasPagamento->find($despesa[0]->getMetodoPagamento());
+
         echo $this->renderiza('despesas/form-despesa.php', [
-            'despesa' => $despesa,
+            'despesa' => $despesa[0],
             'titulo' => 'Editar Despesa',
             'formasPagamento' => $formasPagamento,
-            'bancos' => $bancos
+            'formaPagamento' => $formaPagamento[0],
+            'bancos' => $bancos,
+            'bancoAtual' => $bancoAtual[0]
         ]);
     }
 }

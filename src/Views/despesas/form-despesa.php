@@ -20,19 +20,17 @@
         <div class="select-div">
             <h2>Forma de Pagamento</h2>
             <div class="input-group mb-3">
-                <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento">
-                    <option value=""><?= isset($despesa) ? $despesa->getPagamento() : 'Selecione';?></option>
+                <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento" value="<?php isset($despesa) ? $formaPagamento->getNome() : 'Selecione';?>">
                     <?php foreach ($formasPagamento as $forma):?>
-                    <option value="<?=$forma->getNome();?>"><?= $forma->getNome();?></option>
+                    <option value="<?=$forma->getId();?>"><?= $forma->getNome();?></option>
                     <?php endforeach;?>
                 </select>
             </div>
             <h2>Banco</h2>
             <div class="input-group mb-3">
-                <select class="custom-select " id="inputGroupSelect01" name="banco" id="banco">
-                    <option value=""></option>
+                <select class="custom-select " id="inputGroupSelect01" name="banco" id="banco" value="<?php isset($despesa) ? $bancoAtual->getNome() : 'Selecione';?>">
                     <?php foreach ($bancos as $banco):?>
-                        <option value="<?=$banco->getNome();?>"><?= $banco->getNome();?></option>
+                        <option value="<?=$banco->getId();?>"><?= $banco->getNome();?></option>
                     <?php endforeach;?>
                 </select>
             </div>

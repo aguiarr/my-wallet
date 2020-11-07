@@ -6,7 +6,6 @@ namespace Wallet\Controller\Entradas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
 use Wallet\Model\Infrastructure\Repository\entrada_repository;
@@ -38,14 +37,22 @@ class EditEntrada extends ControllerHtml implements InterfaceController
             return;
         }
 
-        $bancos = $this->repositorioBancos->findAll();
-        $formasPagamento = $this->repositorioFormasPagamentos->findAll();
         $entrada = $this->repositorioEntradas->find($id);
+
+        $bancos = $this->repositorioBancos->findAll();
+        $bancoAtual = $this->repositorioBancos->find($entrada[0]->getBanco());
+
+
+        $formasPagamento = $this->repositorioFormasPagamentos->findAll();
+        $formaPagamento = $this->repositorioFormasPagamentos->find($entrada[0]->getMetodoPagamento());
+
         echo $this->renderiza('entradas/form-entrada.php', [
-            'entrada' => $entrada,
+            'entrada' => $entrada[0],
             'titulo' => 'Editar Entrada',
             'formasPagamento' => $formasPagamento,
-            'bancos' => $bancos
+            'formaPagamento' => $formaPagamento[0],
+            'bancos' => $bancos,
+            'bancoAtual' => $bancoAtual[0]
         ]);
     }
 }

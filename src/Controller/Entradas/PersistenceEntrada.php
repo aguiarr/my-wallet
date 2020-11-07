@@ -6,24 +6,26 @@ namespace Wallet\Controller\Entradas;
 
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Entrada;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\competencia_repository;
 use Wallet\Model\Infrastructure\Repository\entrada_repository;
 
 class PersistenceEntrada implements InterfaceController
 {
 
     private \PDO $connection;
+    private entrada_repository $repositorioEntrada;
+    private competencia_repository $repositorioCompetencia;
 
     public function __construct()
     {
         $this->connection = ConnectionCreator::createConnection();
+        $this->repositorioEntrada = new entrada_repository($this->connection);
+        $this->repositorioCompetencia = new competencia_repository($this->connection);
     }
 
     public function request(): void
     {
-        $entrada = new Entrada();
-
         $descricao = filter_input(
           INPUT_POST,
           'descricao',
@@ -32,8 +34,6 @@ class PersistenceEntrada implements InterfaceController
 
         if(is_null($descricao) || $descricao === false){
             echo "Descricao Inválida";
-        }else{
-            $entrada->setDescricao($descricao);
         }
 
         $valor = filter_input(
@@ -44,10 +44,7 @@ class PersistenceEntrada implements InterfaceController
 
         if(is_null($valor) || $valor === false ){
             echo "Valor Inválido";
-        }else{
-            $entrada->setValor($valor);
         }
-
         $data = filter_input(
             INPUT_POST,
             'data',
@@ -56,20 +53,22 @@ class PersistenceEntrada implements InterfaceController
 
         if(is_null($data) || $data === false){
             echo "Data Inválida";
-        }else{
-            $entrada->setDate($data);
         }
 
         $formaPagamento = filter_input(
             INPUT_POST,
             'formaPagamento',
-            FILTER_SANITIZE_STRING
+            FILTER_VALIDATE_INT
         );
         if(is_null($formaPagamento) || $formaPagamento === false){
             echo  "Forma de Pagamento inválida.";
-        }else{
-            $entrada->setPagamento($formaPagamento);
         }
+
+        $banco = filter_input(
+            INPUT_POST,
+            'banco',
+            FILTER_VALIDATE_INT
+        );
 
         $id = filter_input(
             INPUT_GET,
@@ -77,13 +76,18 @@ class PersistenceEntrada implements InterfaceController
             FILTER_VALIDATE_INT
         );
 
-        $repositorioEntrada = new entrada_repository($this->connection);
+        $competencia = substr($data,0,7);
+        $objCompetencia = $this->repositorioCompetencia->findByElement($competencia);
+        $idCompetencia = $objCompetencia[0]->getId();
 
-        if(!is_null($id) || $id !== false){
-            $entrada->setId($id);
-        }
+        $entrada = new Entrada($id, $descricao, $valor, $data, $idCompetencia, $banco, $formaPagamento);
+//        var_dump($entrada);
+        $this->repositorioEntrada->save($entrada);
 
-        $repositorioEntrada->save($entrada);
+        $valorEntrada = $this->repositorioCompetencia->attValor($idCompetencia);
+
+        $objCompetencia[0]->setValor($valorEntrada);
+        $this->repositorioCompetencia->save($objCompetencia[0]);
 
 
         header('Location: /listar-entradas', true, 302);

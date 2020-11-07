@@ -4,13 +4,10 @@
     <div class="mt-5">
         <h3><b>Competência:</b></h3>
         <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento">
-            <option value=""></option>
-            <option value="09/2020">09/2020</option>
-            <option value="08/2020">08/2020</option>
-            <option value="07/2020">07/2020</option>
-            <option value=""></option>
-            <option value=""></option>
-            <option value=""></option>
+            <option value="">Todos os meses.</option>
+            <?php foreach ($competencias as $competencia):?>
+                <option value="<?=$competencia->getId();?>"><?=$competencia->getCompetencia();?></option>
+            <?php endforeach;?>
         </select>
     </div>
     <div class="table-responsive-sm mt-5">
@@ -25,12 +22,13 @@
                     <th scope="col">Excluir</th>
                 </tr>
             </thead>
-                <?php foreach ($entradas as $entrada): ?>
+            <?php foreach ($entradas as $entrada): ?>
+                <?php $forma = $formasPagamento->find($entrada->getMetodoPagamento());?>
             <tbody>
                     <tr>
                         <td><?= $entrada->getDescricao()?></td>
                         <td><?= $entrada->getDate()?></td>
-                        <td><?= $entrada->getPagamento()?></td>
+                        <td><?= $forma[0]->getNome()?></td>
                         <td>R$ <?= number_format($entrada->getValor(),2,",",".")?></td>
                         <td><a href="/alterar-entrada?id=<?= $entrada->getId();?>" class="btn btn-info btn-sm">Alterar</a></td>
                         <td><a href="/remover-entrada?id=<?= $entrada->getId();?>" class="btn btn-danger btn-sm">Excluir</a></td>

@@ -4,10 +4,11 @@
 namespace Wallet\Controller;
 
 
-use Wallet\Model\Entity\Despesa;
-use Wallet\Model\Entity\Entrada;
+use PDO;
+use Wallet\Controller\Competencias\GerarCompetencias;
 use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\competencia_repository;
 use Wallet\Model\Infrastructure\Repository\despesa_repository;
 use Wallet\Model\Infrastructure\Repository\entrada_repository;
 
@@ -17,12 +18,17 @@ class Home extends ControllerHtml implements InterfaceController
     private PDO $connection;
     private $repositorioEntradas;
     private $repositorioDespesas;
+    /**
+     * @var competencia_repository
+     */
+    private competencia_repository $repositorioCompetencias;
 
     public function __construct()
     {
         $this->connection = ConnectionCreator::createConnection();
         $this->repositorioEntradas = new entrada_repository($this->connection);
         $this->repositorioDespesas = new despesa_repository($this->connection);
+        $this->repositorioCompetencias = new competencia_repository(($this->connection));
     }
 
     public function totalEntrada()
@@ -63,10 +69,13 @@ class Home extends ControllerHtml implements InterfaceController
 
     public function request(): void
     {
+
+        $competencias = $this->repositorioCompetencias->findAll();
         // $despesas = $this->repositorioDespesas->findAll();
         // $entradas = $this->repositorioEntradas->findAll();
         echo $this->renderiza('home.php',[
-            'titulo'=> 'Home'
+            'titulo'=> 'Home',
+            'competencias' => $competencias
             // 'entradas' =>$entradas,
             // 'despesas' => $despesas,
        ]);

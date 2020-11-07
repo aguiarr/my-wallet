@@ -6,8 +6,6 @@ namespace Wallet\Controller\Bancos;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Banco;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
 
@@ -35,7 +33,7 @@ class RemoveBanco extends  ControllerHtml implements InterfaceController
         }
         $repositorioBanco = new banco_repository($this->connection);
         $banco = $repositorioBanco->find($id);
-        $repositorioBanco->remove($banco);
+        $repositorioBanco->remove($banco[0]);
 
         header('Location: /listar-bancos');
     }

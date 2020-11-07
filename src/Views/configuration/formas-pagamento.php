@@ -5,7 +5,7 @@
                 <hr class="my-4">
                 <h2><?=$titulo?></h2>
                 <div class="input-group mb-2">
-                    <input name="nome" id="valor" type="text" class="form-control" placeholder="Nome."value="<?= isset($onePagamento) ? $onePagamento->getNome() : '';?>">
+                    <input name="nome" id="valor" type="text" class="form-control" placeholder="Nome"value="<?= isset($onePagamento) ? $onePagamento->getNome() : '';?>">
                 </div>
                 <div>
                     <input type="submit" class="btn btn-primary float-right mb-5" id="btnEntrada" value="Salvar">
@@ -21,7 +21,7 @@
                     <th scope="col">Excluir</th>
                 </tr>
                 </thead>
-                <?php foreach ($colletionPagamento as $formasPagamentos): ?>
+                <?php foreach($colletionPagamento as $formasPagamentos): ?>
                 <tbody>
                 <tr>
                     <td><?=$formasPagamentos->getNome();?></td>

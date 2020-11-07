@@ -6,15 +6,13 @@ namespace Wallet\Controller\MetodosPagamentos;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\MetodosPagamentos;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class ListarFormasPagamento extends ControllerHtml implements InterfaceController
 {
 
-    private $repositorioFormasPagamentos;
+    private metodo_pagamentos_repository $repositorioFormasPagamentos;
     private \PDO $connection;
 
     public function __construct()

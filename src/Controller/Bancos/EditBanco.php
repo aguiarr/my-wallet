@@ -4,16 +4,16 @@
 namespace Wallet\Controller\Bancos;
 
 
+use PDO;
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Banco;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
 
 class EditBanco extends ControllerHtml implements InterfaceController
 {
-    private $repositorioBancos;
+    private banco_repository $repositorioBancos;
+    private PDO $connection;
 
     public function __construct()
     {
@@ -33,12 +33,13 @@ class EditBanco extends ControllerHtml implements InterfaceController
            return;
        }
 
-       $banco = $this->repositorioBancos->findAll();
+       $bancos = $this->repositorioBancos->findAll();
        $bancoAtual = $this->repositorioBancos->find($id);
+
        echo $this->renderiza('configuration/bancos.php', [
            'titulo' => 'Bancos',
-           'bancoAtual' => $bancoAtual,
-           'bancos' => $banco
+           'bancos' => $bancos,
+           'bancoAtual' => $bancoAtual[0]
         ]);
     }
 }

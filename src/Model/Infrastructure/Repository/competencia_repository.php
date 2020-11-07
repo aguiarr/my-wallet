@@ -4,7 +4,9 @@
 namespace Wallet\Model\Infrastructure\Repository;
 
 
+use PDO;
 use Wallet\Model\Configuration\Competencia;
+use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Repository\CompetenciaRepository;
 
 class competencia_repository implements CompetenciaRepository
@@ -21,7 +23,7 @@ class competencia_repository implements CompetenciaRepository
         $sqlQuery = 'SELECT * FROM competencia;';
         $stmt = $this->connection->query($sqlQuery);
 
-        return $this->hydrateList($stmt);
+        return $this->hydratedList($stmt);
     }
 
     public function find($id): array
@@ -31,8 +33,19 @@ class competencia_repository implements CompetenciaRepository
        $stmt->bindValue(1, $id);
        $stmt->execute();
 
-       return $this->hydrateList($stmt);
+       return $this->hydratedList($stmt);
     }
+
+    public function findByElement($element): array
+    {
+        $sqlQuery = 'SELECT * FROM competencia WHERE competencia = ?;';
+        $stmt = $this->connection->prepare($sqlQuery);
+        $stmt->bindValue(1, $element);
+        $stmt->execute();
+
+        return $this->hydratedList($stmt);
+    }
+
 
     private function insert(Competencia $competencia): bool
     {
@@ -54,7 +67,7 @@ class competencia_repository implements CompetenciaRepository
 
     private function update(Competencia $competencia): bool
     {
-        $sqlQuery = 'UPDATE competencia SET competencia = :competencia, initial_date = :inital_date, final_date = :final_date, valor = :valor;';
+        $sqlQuery = 'UPDATE competencia SET competencia = :competencia, initial_date = :inital_date, final_date = :final_date, valor = :valor WHERE :id = :id;';
         $stmt = $this->connection->prepare($sqlQuery);
         $stmt->bindValue(':competencia', $competencia->getCompetencia());
         $stmt->bindValue(':inital_date', $competencia->getInitialDate());
@@ -67,7 +80,7 @@ class competencia_repository implements CompetenciaRepository
 
     public function save(Competencia $competencia): bool
     {
-        if ($competencia->setId() === null){
+        if ($competencia->getId() === null){
             return $this->insert($competencia);
         }
 
@@ -82,7 +95,7 @@ class competencia_repository implements CompetenciaRepository
         return $stmt->execute();
     }
 
-    public function hydrateList(\PDOStatement $stmt): array
+    public function hydratedList(\PDOStatement $stmt): array
     {
         $dataList = $stmt->fetchAll();
         $list = [];
@@ -97,5 +110,43 @@ class competencia_repository implements CompetenciaRepository
             );
         }
         return $list;
+    }
+
+    public function totalDespesa($id): float
+    {
+        $repositorioDespesa = new despesa_repository($this->connection);
+
+        $despesas = $repositorioDespesa->findByCompetencia($id);
+        foreach ($despesas as $despesa){
+            $valor += floatval($despesa->getValor());
+        }
+        if($valor == null) $valor = 0;
+
+        return $valor;
+    }
+
+    public function totalEntradas($id): float
+    {
+        $repositorioEntradas = new entrada_repository($this->connection);
+
+        $entradas = $repositorioEntradas->findByCompetencia($id);
+        foreach ($entradas as $entrada){
+            $valor += floatval($entrada->getValor());
+        }
+        if($valor == null) $valor = 0;
+
+        return $valor;
+    }
+
+    public function attValor($id): float
+    {
+        $valorDespesas = floatval($this->totalDespesa($id));
+        $valorEntradas = floatval($this->totalEntradas($id));
+
+        if($valorDespesas == null || $valorDespesas == $valorEntradas) $total = 0;
+        if($valorDespesas < $valorEntradas) $total = $valorEntradas - $valorDespesas;
+        if($valorEntradas < $valorDespesas) $total = $valorDespesas - $valorEntradas;
+
+        return $total;
     }
 }

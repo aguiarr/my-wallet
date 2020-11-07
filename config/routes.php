@@ -5,6 +5,7 @@ use Wallet\Controller\Bancos\EditBanco;
 use Wallet\Controller\Bancos\ListarBanco;
 use Wallet\Controller\Bancos\PersistenceBanco;
 use Wallet\Controller\Bancos\RemoveBanco;
+use Wallet\Controller\Competencias\GerarCompetencias;
 use Wallet\Controller\Entradas\AddEntrada;
 use Wallet\Controller\Despesas\EditDespesa;
 use Wallet\Controller\Entradas\EditEntrada;
@@ -43,5 +44,6 @@ return [
     '/adicionar-pagamentos' => AddFormaPagamento::class,
     '/remove-pagamentos' => RemoveFormaPagamento::class,
     '/salvar-pagamentos' => PersistenceFormaPagamento::class,
-    '/listar-pagamentos' => ListarFormasPagamento::class
+    '/listar-pagamentos' => ListarFormasPagamento::class,
+    '/gerar-competencias' => GerarCompetencias::class
 ];

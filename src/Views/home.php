@@ -41,14 +41,11 @@
         <div class="mb-4">
             <h3><b>Competência:</b></h3>
             <div class="">
-                <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento">
-                    <option value=""></option>
-                    <option value="09/2020">09/2020</option>
-                    <option value="08/2020">08/2020</option>
-                    <option value="07/2020">07/2020</option>
-                    <option value=""></option>
-                    <option value=""></option>
-                    <option value=""></option>
+                <select class="custom-select " id="inputGroupSelect01" name="banco" id="banco">
+                    <option value="">Todos os Meses.</option>
+                    <?php foreach ($competencias as $competencia):?>
+                        <option value="<?=$competencia->getId();?>"><?=$competencia->getCompetencia();?></option>
+                    <?php endforeach;?>
                 </select>
             </div>
         </div>

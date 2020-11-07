@@ -5,9 +5,7 @@ namespace Wallet\Controller\Despesas;
 
 
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Competencia;
 use Wallet\Model\Entity\Despesa;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\competencia_repository;
 use Wallet\Model\Infrastructure\Repository\despesa_repository;
@@ -15,18 +13,19 @@ use Wallet\Model\Infrastructure\Repository\despesa_repository;
 class PersistenceDespesa implements  InterfaceController
 {
 
-    private $repositorioCompetencia;
-    private $repositorioDespesa;
+    private competencia_repository $repositorioCompetencia;
+    private despesa_repository $repositorioDespesa;
     private \PDO $connection;
 
     public function __construct()
     {
         $this->connection = ConnectionCreator::createConnection();
+        $this->repositorioDespesa = new despesa_repository($this->connection);
+        $this->repositorioCompetencia = new competencia_repository($this->connection);
     }
 
     public function request(): void
     {
-        $despesa = new Despesa();
 
         $descricao = filter_input(
             INPUT_POST,
@@ -37,8 +36,6 @@ class PersistenceDespesa implements  InterfaceController
         if (is_null($descricao) || $descricao === false) {
             echo "Descricao Inválida";
             echo $descricao;
-        } else {
-            $despesa->setDescricao($descricao);
         }
 
         $valor = filter_input(
@@ -49,10 +46,7 @@ class PersistenceDespesa implements  InterfaceController
 
         if (is_null($valor) || $valor === false) {
             echo "Valor Inválido";
-        } else {
-            $despesa->setValor(floatval($valor));
         }
-
         $data = filter_input(
             INPUT_POST,
             'data',
@@ -61,20 +55,22 @@ class PersistenceDespesa implements  InterfaceController
 
         if (is_null($data) || $data === false) {
             echo "Data Inválida";
-        } else {
-            $despesa->setDate($data);
         }
 
         $formaPagamento = filter_input(
             INPUT_POST,
             'formaPagamento',
-            FILTER_SANITIZE_STRING
+            FILTER_VALIDATE_INT
         );
         if (is_null($formaPagamento) || $formaPagamento === false) {
             echo "Forma de Pagamento inválida.";
-        } else {
-            $despesa->setPagamento($formaPagamento);
         }
+
+        $banco = filter_input(
+            INPUT_POST,
+            'banco',
+            FILTER_VALIDATE_INT
+        );
 
         $id = filter_input(
             INPUT_GET,
@@ -82,13 +78,20 @@ class PersistenceDespesa implements  InterfaceController
             FILTER_VALIDATE_INT
         );
 
-        $repositorioDespesa = new despesa_repository($this->connection);
+        $competencia = substr($data,0,7);
+        $objCompetencia = $this->repositorioCompetencia->findByElement($competencia);
+        $idCompetencia = $objCompetencia[0]->getId();
 
-        if (!is_null($id) || $id !== false) {
-            $despesa->setId($id);
-        }
+        $despesa =  new Despesa($id, $descricao, $valor, $data, $idCompetencia, $banco, $formaPagamento);
+//        var_dump($despesa);
 
-        $repositorioDespesa->save($despesa);
+        $this->repositorioDespesa->save($despesa);
+
+        $valorDespesas = $this->repositorioCompetencia->attValor($idCompetencia);
+
+        $objCompetencia[0]->setValor($valorDespesas);
+        $this->repositorioCompetencia->save($objCompetencia[0]);
+
 
 
         header('Location: /listar-despesas', true, 302);

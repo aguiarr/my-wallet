@@ -4,6 +4,7 @@
 namespace Wallet\Model\Infrastructure\Repository;
 
 
+use PDO;
 use Wallet\Model\Entity\Banco;
 use Wallet\Model\Repository\BancoRepository;
 
@@ -31,10 +32,10 @@ class banco_repository implements BancoRepository
         $stmt->bindValue(1, $id);
         $stmt->execute();
 
-        return $this->hydrateList($stmt);
+        return $this->hydratedList($stmt);
     }
 
-    private function insert(Banco $banco): bool
+    public function insert(Banco $banco): bool
     {
         $sqlQuery = 'INSERT INTO banco (nome) VALUES (:nome);';
         $stmt = $this->connection->prepare($sqlQuery);
@@ -43,14 +44,14 @@ class banco_repository implements BancoRepository
             ':nome' => $banco->getNome()
         ]);
         if ($success){
-            $banco->setId($this->connection->lastInsetId());
+            $banco->setId($this->connection->lastInsertId());
         }
         return $success;
     }
 
-    private function update(Banco $banco): bool
+    public function update(Banco $banco): bool
     {
-        $sqlQuery = 'UPDATE banco SET nome = :nome WHERE id = :id);';
+        $sqlQuery = 'UPDATE banco SET nome = :nome WHERE id = :id;';
         $stmt = $this->connection->prepare($sqlQuery);
         $stmt->bindValue(':nome', $banco->getNome());
         $stmt->bindValue(':id', $banco->getId());
@@ -60,7 +61,8 @@ class banco_repository implements BancoRepository
 
     public function save(Banco $banco): bool
     {
-        if ($banco->getId() === null){
+        var_dump($banco->getId());
+        if ($banco->getId() == null){
             return $this->insert($banco);
         }
         return $this->update($banco);
@@ -74,15 +76,15 @@ class banco_repository implements BancoRepository
         return $stmt->execute();
     }
 
-    public function hydrateList(\PDOStatement $stmt): array
+    public function hydratedList(\PDOStatement $stmt): array
     {
         $dataList = $stmt->fetchAll();
         $list = [];
-
         foreach ($dataList as $data){
+
             $list[] = new Banco(
-              $data['id'],
-              $data['nome']
+              $data['nome'],
+              $data['id']
             );
         }
         return $list;

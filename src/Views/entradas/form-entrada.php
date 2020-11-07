@@ -5,7 +5,7 @@
     <div class="container">
         <div>
             <hr class="my-4">
-            <h2>Cadastrar Entrada</h2>
+            <h2><?=$titulo?></h2>
             <div class="input-group mb-2">
                 <input name="valor" id="valor" type="text" class="form-control" placeholder="Valor da entrada." value="<?= isset($entrada) ? $entrada->getValor() : '';?>">
             </div>
@@ -18,21 +18,21 @@
         </div>
         <hr class="my-4">
         <div class="select-div">
-            <h2>Forma de Recebimento</h2>
+            <h2>Forma de Pagamento</h2>
             <div class="input-group mb-3">
-                <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento" value="">
-                    <option value=""><?= isset($entrada) ? $entrada->getPagamento() : 'Selecione';?></option>
+                <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento">
+                    <option value="<?= isset($entrada) ? $formaPagamento->getId() : null?>?>"><?=isset($entrada) ? $formaPagamento->getNome() : 'Selecione';?></option>
                     <?php foreach ($formasPagamento as $forma):?>
-                    <option value="<?=$forma->getNome();?>"><?= $forma->getNome();?></option>
+                        <option value="<?=$forma->getId();?>"><?= $forma->getNome();?></option>
                     <?php endforeach;?>
                 </select>
             </div>
             <h2>Banco</h2>
             <div class="input-group mb-3">
                 <select class="custom-select " id="inputGroupSelect01" name="banco" id="banco">
-                    <option value=""></option>
+                    <option value="<?= isset($entrada) ? $bancoAtual->getId(): null?>"><?=isset($entrada) ? $bancoAtual->getNome() : 'Selecione';?></option>
                     <?php foreach ($bancos as $banco):?>
-                        <option value="<?=$banco->getNome();?>"><?= $banco->getNome();?></option>
+                        <option value="<?=$banco->getId();?>"><?= $banco->getNome();?></option>
                     <?php endforeach;?>
                 </select>
             </div>

@@ -6,7 +6,6 @@ namespace Wallet\Controller\MetodosPagamentos;
 
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Configuration\MetodosPagamentos;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
@@ -22,18 +21,18 @@ class PersistenceFormaPagamento implements InterfaceController
 
     public function request(): void
     {
-        $formasPagamentos = new MetodosPagamentos();
+        $formasPagamentos = null;
 
         $nome = filter_input(
             INPUT_POST,
             'nome',
             FILTER_SANITIZE_STRING
         );
-        if (is_null($nome) || $nome === falase){
+        if (is_null($nome) || $nome === false){
             echo "Nome Inválido";
             echo $nome;
         }else{
-            $formasPagamentos->setNome($nome);
+            $formasPagamentos = new MetodosPagamentos($nome, null);
         }
 
         $id = filter_input(

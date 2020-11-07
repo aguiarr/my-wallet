@@ -6,12 +6,9 @@
             <h3><b>Competência:</b></h3>
             <select class="custom-select" id="inputGroupSelect01" name="formaPagamento" id="formaPagamento">
                 <option value="">Todos os meses.</option>
-                <option value="09/2020">09/2020</option>
-                <option value="08/2020">08/2020</option>
-                <option value="07/2020">07/2020</option>
-                <option value=""></option>
-                <option value=""></option>
-                <option value=""></option>
+                <?php foreach ($competencias as $competencia):?>
+                    <option value="<?=$competencia->getId();?>"><?=$competencia->getCompetencia();?></option>
+                <?php endforeach;?>
             </select>
         </div>
         <div class="table-responsive-sm mt-5">
@@ -26,16 +23,17 @@
                     <th scope="col">Excluir</th>
                 </tr>
                 </thead>
-                <?php foreach ($despesas as $despesa): ?>
+                <?php foreach ($despesas as $despesa):?>
+                    <?php $forma = $formaPagamento->find($despesa->getMetodoPagamento());?>
                     <tbody>
-                    <tr>
-                        <td><?= $despesa->getDescricao()?></td>
-                        <td><?= $despesa->getDate()?></td>
-                        <td><?= $despesa->getPagamento()?></td>
-                        <td>R$ <?= number_format($despesa->getValor(),2,",",".")?></td>
-                        <td><a href="/alterar-despesa?id=<?= $despesa->getId();?>" class="btn btn-info btn-sm">Alterar</a></td>
-                        <td><a href="/remover-despesa?id=<?= $despesa->getId();?>" class="btn btn-danger btn-sm">Excluir</a></td>
-                    </tr>
+                        <tr>
+                            <td><?= $despesa->getDescricao()?></td>
+                            <td><?= $despesa->getDate()?></td>
+                            <td><?= $forma[0]->getNome()?></td>
+                            <td>R$ <?= number_format($despesa->getValor(),2,",",".")?></td>
+                            <td><a href="/alterar-despesa?id=<?= $despesa->getId();?>" class="btn btn-info btn-sm">Alterar</a></td>
+                            <td><a href="/remover-despesa?id=<?= $despesa->getId();?>" class="btn btn-danger btn-sm">Excluir</a></td>
+                        </tr>
                     </tbody>
                     <?php
                     $total += floatval($despesa->getValor());

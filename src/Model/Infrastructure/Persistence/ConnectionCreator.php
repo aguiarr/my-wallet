@@ -9,9 +9,9 @@ class ConnectionCreator
     public static function createConnection(): PDO
     {
         $connection = new PDO(
-            'mysql:host=172.17.0.2;dbname=banco',
+            'mysql:host=127.0.0.1;dbname=mywallet',
             'root',
-            'senhalura'
+            ''
         );
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

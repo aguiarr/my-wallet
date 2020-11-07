@@ -9,9 +9,13 @@ class MetodosPagamentos
     private ?int $id;
     private string $nome;
 
-    public function __construct(?int $id, string $nome)
+    public function __construct(string $nome, ?int $id)
     {
-        $this->id = $id;
+        if($id === null){
+            $this->id = null;
+        }else{
+            $this->id = $id;
+        }
         $this->nome = $nome;
     }
 

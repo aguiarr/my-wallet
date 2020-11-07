@@ -6,7 +6,6 @@ namespace Wallet\Controller\Bancos;
 
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Banco;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\banco_repository;
 
@@ -21,7 +20,7 @@ class PersistenceBanco implements InterfaceController
     }
     public function request(): void
     {
-        $banco = new Banco();
+        $banco = null;
 
         $nome = filter_input(
             INPUT_POST,
@@ -32,7 +31,7 @@ class PersistenceBanco implements InterfaceController
             echo "Nome Inválido";
             echo $nome;
         }else{
-            $banco->setNome($nome);
+            $banco = new Banco($nome, null);
         }
 
         $id = filter_input(

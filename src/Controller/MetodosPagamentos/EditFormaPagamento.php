@@ -6,18 +6,17 @@ namespace Wallet\Controller\MetodosPagamentos;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Configuration\MetodosPagamentos;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\metodo_pagamentos_repository;
 
 class EditFormaPagamento extends ControllerHtml implements InterfaceController
 {
-    private $repositorioFormaPagamento;
+    private metodo_pagamentos_repository $repositorioFormaPagamento;
+    private \PDO $connection;
 
     public function __construct()
     {
-        $connection = ConnectionCreator::createConnection();
+        $this->connection = ConnectionCreator::createConnection();
         $this->repositorioFormaPagamento = new metodo_pagamentos_repository($this->connection);
     }
 
@@ -38,7 +37,7 @@ class EditFormaPagamento extends ControllerHtml implements InterfaceController
         echo $this->renderiza('configuration/formas-pagamento.php',[
            'titulo' =>'Formas de Pagamento',
            'colletionPagamento' => $colletionPagamento,
-           'onePagamento' => $onePagamento
+           'onePagamento' => $onePagamento[0]
        ]);
     }
 }

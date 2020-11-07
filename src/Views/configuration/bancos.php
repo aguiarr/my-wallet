@@ -1,11 +1,11 @@
-<?php require __DIR__ . '/../header.php'; ?>
+<?php require __DIR__ . '/../header.php';?>
 <div class="container">
     <form method="post" action="/salvar-banco<?= isset($bancoAtual) ? '?id=' . $bancoAtual->getId() : '';?>" >
            <div>
                <hr class="my-4">
                <h2>Bancos</h2>
                <div class="input-group mb-2">
-                   <input name="nome" id="valor" type="text" class="form-control" placeholder="Nome." value="<?= isset($bancoAtual) ? $bancoAtual->getNome() : '';?>">
+                   <input name="nome" id="valor" type="text" class="form-control" placeholder="Nome" value="<?= isset($bancoAtual) ? $bancoAtual->getNome() : '';?>">
                </div>
                <div>
                    <input type="submit" class="btn btn-primary float-right mb-5" id="btnEntrada" value="Salvar Banco">

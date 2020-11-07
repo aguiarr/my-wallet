@@ -6,19 +6,22 @@ namespace Wallet\Controller\Despesas;
 
 use Wallet\Controller\ControllerHtml;
 use Wallet\Controller\InterfaceController;
-use Wallet\Model\Entity\Despesa;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
+use Wallet\Model\Infrastructure\Repository\competencia_repository;
 use Wallet\Model\Infrastructure\Repository\despesa_repository;
 
 class RemoveDespesa extends  ControllerHtml implements  InterfaceController
 {
 
     private \PDO $connection;
+    private competencia_repository $repositorioCompetencia;
+    private despesa_repository $despesaRepository;
 
     public function __construct()
     {
         $this->connection = ConnectionCreator::createConnection();
+        $this->despesaRepository = new despesa_repository($this->connection);
+        $this->repositorioCompetencia = new competencia_repository($this->connection);
     }
     public function request(): void
     {
@@ -31,9 +34,14 @@ class RemoveDespesa extends  ControllerHtml implements  InterfaceController
             header('Location: /listar-despesas');
             return;
         }
-        $despesaRepository = new despesa_repository($this->connection);
-        $despesa = $despesaRepository->find($id);
-        $despesaRepository->remove($despesa);
+
+        $despesa = $this->despesaRepository->find($id);
+        $despesaRepository->remove($despesa[0]);
+
+        $valorDespesa= $this->repositorioCompetencia->attValor($despesa[0]->getCompetencia());
+        $objCompetencia = $this->repositorioCompetencia->find($despesa[0]->getCompetencia());
+        $objCompetencia[0]->setValor($valorDespesa);
+        $this->repositorioCompetencia->save($objCompetencia[0]);
 
         header('Location: /listar-despesas');
     }

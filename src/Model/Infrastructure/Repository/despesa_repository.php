@@ -4,6 +4,7 @@
 namespace Wallet\Model\Infrastructure\Repository;
 
 
+use PDO;
 use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Repository\DespesaRepository;
 
@@ -32,33 +33,44 @@ class despesa_repository implements DespesaRepository
         $stmt->bindValue(1, $id);
         $stmt->execute();
 
-        return $this->hydrateList($stmt);
+        return $this->hydratedList($stmt);
+    }
+    public function findByCompetencia($id): array
+    {
+        $sqlQuery = 'SELECT * FROM despesas WHERE id_competencia = ?;';
+        $stmt = $this->connection->prepare($sqlQuery);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+
+        return $this->hydratedList($stmt);
     }
 
     private function insert(Despesa $despesa): bool
     {
-        $insertQuery = 'INSERT INTO despesas (valor, descricao, id_banco, id_competencia, id_metodo_pagamento) VALUES (:valor, :descricao, :id_banco, :id_competencia, :id_metodo_pagamento);';
+        $insertQuery = 'INSERT INTO despesas (valor, descricao, date, id_banco, id_competencia, id_metodo_pagamento) VALUES (:valor, :descricao, :date, :id_banco, :id_competencia, :id_metodo_pagamento);';
         $stmt = $this->connection->prepare($insertQuery);
 
         $success = $stmt->execute([
             ':valor' => $despesa->getValor(),
-            'descricao' => $despesa->getDescricao(),
-            'id_banco' => $despesa->getBanco(),
-            'id_competencia' => $despesa->getCompetencia(),
-            'id_metodo_pagamento' => $despesa->getMetodoPagamento()
+            ':descricao' => $despesa->getDescricao(),
+            ':date' => $despesa->getDate(),
+            ':id_banco' => $despesa->getBanco(),
+            ':id_competencia' => $despesa->getCompetencia(),
+            ':id_metodo_pagamento' => $despesa->getMetodoPagamento()
         ]);
         if ($success){
-            $despesa->setId($this->connection->lastInsetId());
+            $despesa->setId($this->connection->lastInsertId());
         }
         return $success;
     }
 
     private function update(Despesa $despesa): bool
     {
-        $sqlQuery = 'UPDATE despesas SET valor = :valor, descricao = :descricao, id_banco = :id_banco, id_competencia = :id_competencia, id_metodo_pagamento = :id_metodo_pagamento WHERE id = :id);';
+        $sqlQuery = 'UPDATE despesas SET valor = :valor, descricao = :descricao, date = :date, id_banco = :id_banco, id_competencia = :id_competencia, id_metodo_pagamento = :id_metodo_pagamento WHERE id = :id;';
         $stmt = $this->connection->prepare($sqlQuery);
         $stmt->bindValue(':valor', $despesa->getValor());
         $stmt->bindValue(':descricao', $despesa->getDescricao());
+        $stmt->bindValue(':date', $despesa->getDate());
         $stmt->bindValue(':id_banco', $despesa->getBanco());
         $stmt->bindValue(':id_competencia', $despesa->getCompetencia());
         $stmt->bindValue(':id_metodo_pagamento', $despesa->getMetodoPagamento());
@@ -84,7 +96,7 @@ class despesa_repository implements DespesaRepository
     }
 
 
-    public function hydrateList(\PDOStatement $stmt): array
+    public function hydratedList(\PDOStatement $stmt): array
     {
         $dataList = $stmt->fetchAll();
         $list = [];
@@ -92,10 +104,11 @@ class despesa_repository implements DespesaRepository
         foreach ($dataList as $data){
             $list[] = new Despesa(
                 $data['id'],
-                $data['valor'],
                 $data['descricao'],
-                $data['id_banco'],
+                $data['valor'],
+                $data['date'],
                 $data['id_competencia'],
+                $data['id_banco'],
                 $data['id_metodo_pagamento']
             );
         }

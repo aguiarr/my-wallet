@@ -52,6 +52,8 @@ class entrada_repository implements EntradaRepository
         $stmt->execute();
 
         $dataList = $stmt->fetchAll();
+        if($dataList[0]["SUM(valor)"] == null) return 0;
+
         return $dataList[0]["SUM(valor)"];
     }
     private function insert(Entrada $entrada): bool

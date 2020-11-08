@@ -37,18 +37,12 @@
                   </div>
                 </li>
                   <li class="nav-item dropdown">
-                      <a class="nav-link toggle" href="/home" id="navbarDropdownMenuLink" role="button" aria-haspopup="true" aria-expanded="false">
-                          Poupança
-                      </a>
-                  </li>
-                  <li class="nav-item dropdown">
                       <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Configurações
                       </a>
                       <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                           <a class="dropdown-item" href="/listar-bancos">Bancos</a>
                           <a class="dropdown-item" href="/listar-pagamentos">Formas de pagamento</a>
-                          <a class="dropdown-item" href="/gerar-competencias">Gerar Competências</a>
                       </div>
                   </li>
               </ul>

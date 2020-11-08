@@ -65,9 +65,9 @@ class competencia_repository implements CompetenciaRepository
         return $success;
     }
 
-    private function update(Competencia $competencia): bool
+    public function update(Competencia $competencia): bool
     {
-        $sqlQuery = 'UPDATE competencia SET competencia = :competencia, initial_date = :inital_date, final_date = :final_date, valor = :valor WHERE :id = :id;';
+        $sqlQuery = 'UPDATE competencia SET competencia = :competencia, initial_date = :inital_date, final_date = :final_date, valor = :valor WHERE id = :id;';
         $stmt = $this->connection->prepare($sqlQuery);
         $stmt->bindValue(':competencia', $competencia->getCompetencia());
         $stmt->bindValue(':inital_date', $competencia->getInitialDate());
@@ -80,10 +80,10 @@ class competencia_repository implements CompetenciaRepository
 
     public function save(Competencia $competencia): bool
     {
-        if ($competencia->getId() === null){
+        if ($competencia->getId() == null){
             return $this->insert($competencia);
         }
-
+        var_dump("nao entrou");
         return $this->update($competencia);
     }
 
@@ -148,5 +148,12 @@ class competencia_repository implements CompetenciaRepository
         if($valorEntradas < $valorDespesas) $total = $valorDespesas - $valorEntradas;
 
         return $total;
+    }
+
+    public function att(){
+        $competencias = $this->findAll();
+        foreach ($competencias as $competencia){
+            $this->attValor($competencia->getId());
+        }
     }
 }

@@ -51,6 +51,8 @@ class despesa_repository implements DespesaRepository
         $stmt->execute();
 
         $dataList = $stmt->fetchAll();
+        if($dataList[0]["SUM(valor)"] == null) return 0;
+        
         return $dataList[0]["SUM(valor)"];
     }
     private function insert(Despesa $despesa): bool

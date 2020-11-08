@@ -36,10 +36,11 @@ class RemoveDespesa extends  ControllerHtml implements  InterfaceController
         }
 
         $despesa = $this->despesaRepository->find($id);
-        $despesaRepository->remove($despesa[0]);
+        $this->despesaRepository->remove($despesa[0]);
 
         $valorDespesa= $this->repositorioCompetencia->attValor($despesa[0]->getCompetencia());
         $objCompetencia = $this->repositorioCompetencia->find($despesa[0]->getCompetencia());
+
         $objCompetencia[0]->setValor($valorDespesa);
         $this->repositorioCompetencia->save($objCompetencia[0]);
 

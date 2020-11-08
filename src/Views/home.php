@@ -19,7 +19,7 @@
             <h3><b>Competência:</b></h3>
             <div class="">
                 <select class="custom-select " id="select-comp" name="banco" id="banco">
-                    <option value="">Todos os Meses.</option>
+                    <option>Selecione</option>
                     <?php foreach ($competencias as $competencia):?>
                         <option value="<?=$competencia->getId();?>"><?=$competencia->getCompetencia();?></option>
                     <?php endforeach;?>
@@ -32,19 +32,19 @@
         <div class="despesa-div">
             <h5 for="">Despesas:</h5>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" readonly value="<?= number_format($totalDespesas,2,",",".")?>">
+                <input type="text" class="form-control" id="despesas" readonly value="<?= number_format($totalDespesas,2,",",".")?>">
             </div>
         </div>
         <div class="entrada-div">
             <h5 for="">Entradas:</h5>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" readonly value="<?= number_format($totalEntradas,2,",",".")?>">
+                <input type="text" class="form-control" id="entradas" readonly value="<?= number_format($totalEntradas,2,",",".")?>">
             </div>
         </div>
         <div class="total-div">
             <h5 for="">Total do Mês:</h5>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" readonly value="<?= number_format($total,2,",",".")?>">
+                <input type="text" class="form-control" id="total" readonly value="<?= number_format($total,2,",",".")?>">
             </div>
         </div>
         

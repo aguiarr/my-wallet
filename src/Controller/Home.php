@@ -4,9 +4,8 @@
 namespace Wallet\Controller;
 
 
+use DateTime;
 use PDO;
-use Wallet\Controller\Competencias\GerarCompetencias;
-use Wallet\Model\Infrastructure\EntityManagerCreator;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\competencia_repository;
 use Wallet\Model\Infrastructure\Repository\despesa_repository;
@@ -35,8 +34,7 @@ class Home extends ControllerHtml implements InterfaceController
          $entrada = $this->repositorioEntradas->sumEntradas();
 
         if($despesa === null || $entrada === null ||$despesa == $entrada) $total = 0;
-        if($despesa < $entrada) $total = $entrada - $despesa;
-        if($entrada < $despesa) $total = $despesa - $entrada;
+        $total = $entrada - $despesa;
 
         return $total;
     }
@@ -55,12 +53,25 @@ class Home extends ControllerHtml implements InterfaceController
 
     public function request(): void
     {
+        $date = new DateTime();
+        $competencia = $date->format('Y-m');
+        $competenciaAtual = $this->repositorioCompetencias->findByElement($competencia);
+
+        if($this->repositorioCompetencias->findByElement($competencia)){
+            $total = $this->total();
+            $situacao = $this->situacao();
+        }else{
+            $total = 0;
+            $situacao = ['indefinida', 'black'];
+        }
+
         $competencias = $this->repositorioCompetencias->findAll();
         echo $this->renderiza('home.php',[
             'titulo'=> 'Home',
             'competencias' => $competencias,
-            'total' => $this->total(),
-            'situacao' => $this->situacao()
+            'competenciaAtual' => $competenciaAtual[0],
+            'total' => $total,
+            'situacao' => $situacao
        ]);
     }
 }

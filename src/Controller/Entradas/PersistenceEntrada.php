@@ -4,6 +4,7 @@
 namespace Wallet\Controller\Entradas;
 
 
+use Wallet\Controller\Competencias\GerarCompetencias;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Entrada;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
@@ -13,15 +14,17 @@ use Wallet\Model\Infrastructure\Repository\entrada_repository;
 class PersistenceEntrada implements InterfaceController
 {
 
-    private \PDO $connection;
     private entrada_repository $repositorioEntrada;
     private competencia_repository $repositorioCompetencia;
+    private GerarCompetencias $gerarCompetencia;
+    private \PDO $connection;
 
     public function __construct()
     {
         $this->connection = ConnectionCreator::createConnection();
         $this->repositorioEntrada = new entrada_repository($this->connection);
         $this->repositorioCompetencia = new competencia_repository($this->connection);
+        $this->gerarCompetencia = new GerarCompetencias();
     }
 
     public function request(): void
@@ -77,6 +80,9 @@ class PersistenceEntrada implements InterfaceController
         );
 
         $competencia = substr($data,0,7);
+        $this->gerarCompetencia->gerarCompetencia($competencia);
+
+
         $objCompetencia = $this->repositorioCompetencia->findByElement($competencia);
         $idCompetencia = $objCompetencia[0]->getId();
 

@@ -4,6 +4,7 @@
 namespace Wallet\Controller\Despesas;
 
 
+use Wallet\Controller\Competencias\GerarCompetencias;
 use Wallet\Controller\InterfaceController;
 use Wallet\Model\Entity\Despesa;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
@@ -15,6 +16,7 @@ class PersistenceDespesa implements  InterfaceController
 
     private competencia_repository $repositorioCompetencia;
     private despesa_repository $repositorioDespesa;
+    private GerarCompetencias $gerarCompetencia;
     private \PDO $connection;
 
     public function __construct()
@@ -22,6 +24,7 @@ class PersistenceDespesa implements  InterfaceController
         $this->connection = ConnectionCreator::createConnection();
         $this->repositorioDespesa = new despesa_repository($this->connection);
         $this->repositorioCompetencia = new competencia_repository($this->connection);
+        $this->gerarCompetencia = new GerarCompetencias();
     }
 
     public function request(): void
@@ -79,19 +82,25 @@ class PersistenceDespesa implements  InterfaceController
         );
 
         $competencia = substr($data,0,7);
+
+        if(!$this->repositorioCompetencia->findByElement($competencia)) $this->gerarCompetencia->gerarCompetencia($competencia);
+//        var_dump("a");
+
+
+
+
         $objCompetencia = $this->repositorioCompetencia->findByElement($competencia);
         $idCompetencia = $objCompetencia[0]->getId();
+//        var_dump($objCompetencia);
 
         $despesa =  new Despesa($id, $descricao, $valor, $data, $idCompetencia, $banco, $formaPagamento);
 //        var_dump($despesa);
 
         $this->repositorioDespesa->save($despesa);
-
         $valorDespesas = $this->repositorioCompetencia->attValor($idCompetencia);
 
         $objCompetencia[0]->setValor($valorDespesas);
-        $this->repositorioCompetencia->save($objCompetencia[0]);
-
+        $this->repositorioCompetencia->update($objCompetencia[0]);
 
 
         header('Location: /listar-despesas', true, 302);

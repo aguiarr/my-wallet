@@ -12,7 +12,7 @@ use Wallet\Model\Configuration\Competencia;
 use Wallet\Model\Infrastructure\Persistence\ConnectionCreator;
 use Wallet\Model\Infrastructure\Repository\competencia_repository;
 
-class GerarCompetencias extends ControllerHtml implements InterfaceController
+class GerarCompetencias
 {
 
     private competencia_repository $repositorioCompetenia;
@@ -36,10 +36,22 @@ class GerarCompetencias extends ControllerHtml implements InterfaceController
         }
     }
 
-    public function request(): void
+    public function gerarCompetencia($competencia)
     {
-        $this->nextCompetencia();
-        header('Location: /home', true, 302);
+        if (!$this->repositorioCompetenia->findByElement($competencia)) {
+            $initial_date = $competencia . '-01';
+            $final_date = date("Y-m-t", strtotime($initial_date));
+
+            $Objcompetencia = new Competencia(null, $competencia, $initial_date, $final_date, 0.0);
+            $this->repositorioCompetenia->save($Objcompetencia);
+         }
 
     }
+
+//    public function request(): void
+//    {
+//        $this->nextCompetencia();
+//        header('Location: /home', true, 302);
+//
+//    }
 }

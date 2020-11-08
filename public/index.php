@@ -1,11 +1,9 @@
 <?php
 
 use Wallet\Controller\InterfaceController;
+use Wallet\Model\Infrastructure\Persistence\CreateTables;
 
 require __DIR__ . '/../vendor/autoload.php';
-
-$comp = new \Wallet\Controller\Competencias\GerarCompetencias();
-$comp->nextCompetencia();
 
 $path = $_SERVER['PATH_INFO'];
 $rotas = require __DIR__ . '/../config/routes.php';
